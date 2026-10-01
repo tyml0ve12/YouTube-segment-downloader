@@ -63,7 +63,9 @@ def check_for_update(timeout: int = 10) -> Optional[UpdateInfo]:
     url = f"https://github.com/{GITHUB_REPO}/releases/latest/download/latest.json"
     try:
         with urllib.request.urlopen(url, timeout=timeout) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
+            # utf-8-sig: bo qua BOM dau file neu co (vd file duoc luu/cache
+            # qua cong cu ghi BOM) - tranh loi "Expecting value" cua json.loads.
+            data = json.loads(resp.read().decode("utf-8-sig"))
     except Exception:  # noqa: BLE001
         return None
 
