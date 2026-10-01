@@ -1,0 +1,8 @@
+# Cac file/thu muc tao ra luc chay hoac dong goi - khong can luu vao git
+__pycache__/
+*.pyc
+bin/
+dist/
+.installed
+*.log
+gpu_check_cache.json

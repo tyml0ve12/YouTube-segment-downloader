@@ -1,0 +1,2 @@
+# Không cần thư viện ngoài nào - chỉ dùng thư viện chuẩn của Python (tkinter, urllib, subprocess...).
+# yt-dlp.exe và ffmpeg.exe sẽ được chương trình tự động tải về thư mục python/bin khi chạy lần đầu.
