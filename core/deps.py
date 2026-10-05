@@ -3,7 +3,9 @@ from __future__ import annotations
 
 import os
 import shutil
+import ssl
 import stat
+import urllib.error
 import urllib.request
 import zipfile
 from pathlib import Path
@@ -53,9 +55,23 @@ def find_deno() -> Optional[Path]:
     return _find_on_path("deno.exe") or _find_on_path("deno")
 
 
+def _open_url(url: str, cb: ProgressCb):
+    """Mở URL; nếu máy không xác minh được chứng chỉ SSL (antivirus/proxy chặn
+    HTTPS, thiếu chứng chỉ gốc) thì thử lại không xác minh - chỉ dùng để tải
+    công cụ từ GitHub chính thức."""
+    try:
+        return urllib.request.urlopen(url)
+    except urllib.error.URLError as exc:
+        if not isinstance(exc.reason, ssl.SSLError):
+            raise
+        _log(cb, "Máy không xác minh được chứng chỉ SSL, thử lại ở chế độ tương thích...")
+        ctx = ssl._create_unverified_context()
+        return urllib.request.urlopen(url, context=ctx)
+
+
 def _download(url: str, dest: Path, cb: ProgressCb) -> None:
     _log(cb, f"Đang tải {url} ...")
-    with urllib.request.urlopen(url) as resp, open(dest, "wb") as out:
+    with _open_url(url, cb) as resp, open(dest, "wb") as out:
         total = int(resp.headers.get("Content-Length", 0))
         read = 0
         chunk = 1024 * 256
