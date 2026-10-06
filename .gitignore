@@ -6,3 +6,4 @@ dist/
 .installed
 *.log
 gpu_check_cache.json
+settings.json

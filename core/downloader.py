@@ -199,8 +199,8 @@ def describe_gpu_status(ffmpeg_path: Path) -> tuple[str, Optional[str]]:
 
     if gpu_vendors:
         names = ", ".join(_VENDOR_LABEL.get(v, v) for v in sorted(gpu_vendors))
-        message = (f"⚠ Phát hiện GPU {names} nhưng driver chưa đáp ứng yêu cầu của FFmpeg "
-                   f"(cần bản driver mới hơn). Hiện đang dùng CPU (vẫn hoạt động bình thường, chỉ chậm hơn).")
+        message = (f"⚠ Card đồ họa {names} của bạn cần cập nhật driver để tải video nhanh hơn. "
+                   f"Hiện app vẫn chạy bình thường nhưng chậm hơn.")
         primary_vendor = sorted(gpu_vendors)[0]
         return message, _VENDOR_DRIVER_URL.get(primary_vendor)
 
@@ -328,6 +328,28 @@ class Downloader:
                 "Trình duyệt bạn chọn dùng cách mã hoá cookie mới mà công cụ tải chưa hỗ trợ giải mã được."
             )
 
+    _FRIENDLY_ERRORS = (
+        (("private video",), "Video này ở chế độ riêng tư nên không tải được."),
+        (("video unavailable", "this video is not available", "has been removed", "no longer available",
+          "account associated with this video has been terminated"),
+         "Video không còn tồn tại hoặc đã bị xóa. Hãy kiểm tra lại link."),
+        (("not available in your country", "blocked it in your country", "who has blocked it"),
+         "Video bị chặn ở quốc gia của bạn nên không tải được."),
+        (("members-only", "join this channel"), "Đây là video chỉ dành cho thành viên của kênh nên không tải được."),
+        (("unsupported url", "is not a valid url"), "Link chưa đúng. Hãy dán link video YouTube (dạng youtube.com/watch... hoặc youtu.be/...)."),
+        (("premieres in", "live event will begin", "this live event"),
+         "Video này chưa phát sóng hoặc đang phát trực tiếp. Hãy thử lại sau khi video đã kết thúc."),
+    )
+
+    @classmethod
+    def _raise_friendly_error(cls, stdout: str) -> None:
+        lowered = stdout.lower()
+        if "confirm your age" in lowered or "age-restricted" in lowered or "inappropriate for some users" in lowered:
+            raise CookieError("Video giới hạn độ tuổi, cần đăng nhập YouTube để tải.")
+        for keywords, message in cls._FRIENDLY_ERRORS:
+            if any(k in lowered for k in keywords):
+                raise DownloadError(message)
+
     def cancel(self) -> None:
         """Hủy tiến trình tải/cắt đang chạy - dùng khi người dùng đóng app,
         diệt cả tiến trình con (VD ffmpeg do yt-dlp sinh ra) bằng taskkill /T
@@ -401,8 +423,8 @@ class Downloader:
         if result.returncode != 0:
             self._log(result.stdout)
             self._raise_if_cookie_error(result.stdout)
-            raise DownloadError(f"Không lấy được thông tin video (id: {self.req.url_or_id}). "
-                                 "Hãy kiểm tra kết nối mạng hoặc quyền truy cập video.")
+            self._raise_friendly_error(result.stdout)
+            raise DownloadError("Không lấy được thông tin video. Hãy kiểm tra lại link và kết nối mạng, rồi thử lại.")
 
         try:
             data = json.loads(result.stdout.strip().splitlines()[-1])
@@ -494,7 +516,8 @@ class Downloader:
         if result.returncode != 0:
             self._log(result.stdout)
             self._raise_if_cookie_error(result.stdout)
-            raise DownloadError("Tải video thất bại, vui lòng thử lại.")
+            self._raise_friendly_error(result.stdout)
+            raise DownloadError("Tải video thất bại. Hãy kiểm tra kết nối mạng rồi thử lại.")
         self._log("Tải video xong.")
 
     def _cut_with_ffmpeg(self, input_path: Path, output_path: Path) -> None:

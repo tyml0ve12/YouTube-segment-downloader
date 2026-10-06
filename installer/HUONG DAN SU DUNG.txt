@@ -1,0 +1,46 @@
+=====================================================
+   TẢI VIDEO YOUTUBE THEO ĐOẠN - HƯỚNG DẪN NHANH
+=====================================================
+
+PHẦN 1. CÀI ĐẶT (làm 1 lần)
+---------------------------
+1. Giải nén file .zip vừa nhận (chuột phải -> Extract All / Giải nén).
+2. Mở thư mục vừa giải nén, bấm đúp vào file "CAI DAT.bat".
+3. Chờ cài xong (lần đầu có thể mất vài phút vì máy cần tải thêm công cụ).
+4. Ngoài màn hình Desktop sẽ có biểu tượng "Tải Video Youtube Theo Đoạn".
+   Từ lần sau chỉ cần bấm đúp vào biểu tượng đó.
+
+PHẦN 2. TẢI MỘT ĐOẠN VIDEO
+--------------------------
+1. Dán link YouTube vào ô "Link Youtube".
+2. Chọn thư mục lưu video (bấm nút hình thư mục).
+3. Nhập thời gian "Bắt đầu" và "Kết thúc" theo dạng giờ:phút:giây.
+   Ví dụ muốn lấy từ phút 1:23 đến phút 2:05 thì nhập 00:01:23 và 00:02:05.
+4. Bấm nút "Tải xuống" và chờ. Khi xong, video nằm trong thư mục bạn đã chọn.
+
+Muốn tải cả video: bỏ dấu tick ở ô "Bật" (mục Cắt đoạn).
+
+PHẦN 3. NẾU APP BÁO LỖI "CẦN COOKIE ĐĂNG NHẬP"
+----------------------------------------------
+Đây là YouTube yêu cầu xác nhận bạn không phải máy tự động.
+Trong app bấm nút "?" cạnh ô "Cookie từ trình duyệt" để xem hướng dẫn, hoặc làm như sau:
+
+1. Mở Chrome / Cốc Cốc / Edge, vào youtube.com và ĐĂNG NHẬP.
+2. Cài tiện ích "Get cookies.txt LOCALLY" từ cửa hàng tiện ích của trình duyệt.
+3. Ở trang youtube.com, bấm biểu tượng tiện ích -> bấm "Export" để lưu file cookies.txt.
+4. Trong app, bấm nút hình tờ giấy (📄) cạnh ô "Cookie từ trình duyệt" và chọn file cookies.txt.
+5. Bấm "Tải xuống" lại.
+
+Lưu ý: file cookies.txt chứa thông tin đăng nhập của bạn, đừng gửi cho người khác.
+
+PHẦN 4. NẾU VIDEO XUẤT RA CHẬM
+------------------------------
+Nếu dưới cùng cửa sổ có nút "Cập nhật driver GPU", bấm vào, tải driver mới
+từ trang hãng mở ra, cài đặt rồi KHỞI ĐỘNG LẠI máy. Máy sẽ xuất video nhanh hơn.
+Không thấy nút này thì không cần làm gì.
+
+PHẦN 5. GẶP LỖI KHÁC
+--------------------
+- Bấm "Tải lại yt-dlp / FFmpeg" ở dưới cùng cửa sổ, rồi thử lại.
+- App tự báo khi có bản mới. Bấm "Cập nhật ngay" là xong.
+- Vẫn lỗi: chụp màn hình cửa sổ (cả phần chữ ở khung đen) gửi cho người hỗ trợ.

@@ -58,6 +58,11 @@ if (Test-Path $BatSrc) {
     Copy-Item -Path $BatSrc -Destination $DistApp -Force
 }
 
+$GuideSrc = Join-Path $Root "installer\HUONG DAN SU DUNG.txt"
+if (Test-Path $GuideSrc) {
+    Copy-Item -Path $GuideSrc -Destination $DistApp -Force
+}
+
 $InstallerZipPath = Join-Path $Root "dist\${AppName}_v$Version.zip"
 if (Test-Path $InstallerZipPath) { Remove-Item $InstallerZipPath -Force }
 Compress-Archive -Path $DistApp -DestinationPath $InstallerZipPath
@@ -100,7 +105,10 @@ if (-not $GithubRepo) {
         mandatory = -not $Optional.IsPresent
     }
     $LatestJsonPath = Join-Path $ReleaseDir "latest.json"
-    $LatestJson | ConvertTo-Json | Set-Content -Path $LatestJsonPath -Encoding utf8
+    # Dung UTF8Encoding($false) de KHONG ghi BOM dau file - neu co BOM,
+    # json.loads() ben phia core/updater.py se bao loi "Expecting value".
+    $Utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+    [System.IO.File]::WriteAllText($LatestJsonPath, ($LatestJson | ConvertTo-Json), $Utf8NoBom)
     Write-Host "Da tao: $LatestJsonPath" -ForegroundColor Green
 }
 
